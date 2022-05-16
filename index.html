@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Solartify mini player</title>
+        <link rel="stylesheet" href="style.css" />
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <div id="background"></div>
+        <main id="login-container">
+            <button id="login-btn">Login</button>
+        </main>
+        <main id="player">
+            <p id="error"></p>
+            <img id="album-art" src="" alt="" />
+            <div id="song-info">
+                <p id="song-name">song name</p>
+                <p id="song-artist">song artist</p>
+            </div>
+            <div id="controls-container">
+                <button id="prev"><<</button>
+                <button style="display: none" class="pause-play" id="play">play</button>
+                <button class="pause-play" id="pause">pause</button>
+                <button id="next">>></button>
+            </div>
+            <button id="remove">Remove song</button>
+            <button id="update">update</button>
+        </main>
+    </body>
+</html>
