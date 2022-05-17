@@ -56,9 +56,9 @@ function login() {
 
             this.remove = document.getElementById("remove");
 
-            this.playlist;
-            this.song_uri;
-            this.play_state;
+            this.playlist = "";
+            this.song_uri = "";
+            this.play_state = false;
 
             this.html = document.querySelector("html");
             this.background = document.getElementById("background");
@@ -84,11 +84,17 @@ function login() {
             fetch(BASEURL + "me/player/pause", {
                 method: "PUT",
                 headers: defaultHeaders,
+            }).then(() => {
+                a.play_state = !a.play_state;
+                a.play_img.src = "./media/icon_play.png";
             });
         } else {
             fetch(BASEURL + "me/player/play", {
                 method: "PUT",
                 headers: defaultHeaders,
+            }).then(() => {
+                a.play_state = !a.play_state;
+                a.play_img.src = "./media/icon_pause.png";
             });
         }
     });
@@ -107,7 +113,7 @@ function login() {
 
             body: JSON.stringify({ tracks: [{ uri: a.song_uri }] }),
         })
-            .then(() => console.log("skip") /* skip */)
+            .then(() => a.next.click())
             .catch((e) => a.error.innerHTML(e));
     });
 
@@ -130,7 +136,20 @@ function login() {
             })
 
             .then((data) => {
-                if (data["item"]["uri"] === a.song_uri) return;
+                if (!data) {
+                    a.error.innerHTML = "data was null";
+                    return;
+                }
+
+                if (data["is_playing"]) {
+                    a.play_img.src = "./media/icon_pause.png";
+                    a.play_state = true;
+                } else {
+                    a.play_img.src = "./media/icon_play.png";
+                    a.play_state = false;
+                }
+
+                if (data["item"]["uri"] === a.song_uri) return; // if the song is the same, don't update
 
                 a.album_art.src = data["item"]["album"]["images"][0]["url"];
                 a.song_name.innerHTML = data["item"]["name"];
@@ -144,14 +163,6 @@ function login() {
                 a.song_uri = data["item"]["uri"];
 
                 a.background.style.background = "no-repeat url(" + data["item"]["album"]["images"][0]["url"] + ")";
-
-                if (data["is_playing"]) {
-                    a.play_img.src = "./media/icon_pause.png";
-                    a.play_state = true;
-                } else {
-                    a.play_img.src = "./media/icon_play.png";
-                    a.play_state = false;
-                }
             })
             .catch((err) => {
                 a.error.innerHTML = err;
