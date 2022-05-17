@@ -7,6 +7,23 @@
         <title>Solartify mini player</title>
         <link rel="stylesheet" href="style.css" />
         <script src="script.js" defer></script>
+        <script>
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("sw.js");
+            }
+        </script>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+            const firebaseConfig = {
+                apiKey: "AIzaSyCqs0QVthZlRjn3DtarklXVgCAAokHamos",
+                authDomain: "mini-solartify.firebaseapp.com",
+                projectId: "mini-solartify",
+                storageBucket: "mini-solartify.appspot.com",
+                messagingSenderId: "1082998674889",
+                appId: "1:1082998674889:web:a26201acacbd6eb59e8418",
+            };
+            const app = initializeApp(firebaseConfig);
+        </script>
     </head>
     <body>
         <div id="background"></div>
