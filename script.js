@@ -13,8 +13,8 @@ function login() {
     localStorage.setItem("state", state);
 
     const client_id = "ae780b9e7bf4476285fcfc7475fc2664";
-    const redirect_uri = "http://127.0.0.1:5500/index.html";
-    // const redirect_uri = "https://mini-solartify.web.app/";
+    // const redirect_uri = "http://127.0.0.1:5500/index.html";
+    const redirect_uri = "https://mini-solartify.web.app/";
 
     const url =
         "https://accounts.spotify.com/authorize" +
