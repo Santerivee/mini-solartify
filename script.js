@@ -1,4 +1,6 @@
-document.getElementById("login-btn").addEventListener("click", () => {
+document.getElementById("login-btn").addEventListener("click", login);
+
+function login() {
     let state = (() => {
         const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         let text = "";
@@ -24,7 +26,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
         state;
 
     window.location = url;
-});
+}
 
 (function () {
     if (!window.location.hash) return;
@@ -49,14 +51,13 @@ document.getElementById("login-btn").addEventListener("click", () => {
             this.next = document.getElementById("next");
 
             this.play = document.getElementById("play");
-            this.pause = document.getElementById("pause");
+            this.play_img = document.getElementById("play-img");
 
             this.remove = document.getElementById("remove");
 
-            this.update = document.getElementById("update");
-
             this.playlist;
             this.song_uri;
+            this.play_state;
 
             this.html = document.querySelector("html");
             this.background = document.getElementById("background");
@@ -78,10 +79,17 @@ document.getElementById("login-btn").addEventListener("click", () => {
     });
 
     a.play.addEventListener("click", function () {
-        fetch(BASEURL + "me/player/play", {
-            method: "PUT",
-            headers: defaultHeaders,
-        });
+        if (a.play_state) {
+            fetch(BASEURL + "me/player/pause", {
+                method: "PUT",
+                headers: defaultHeaders,
+            });
+        } else {
+            fetch(BASEURL + "me/player/play", {
+                method: "PUT",
+                headers: defaultHeaders,
+            });
+        }
     });
 
     a.next.addEventListener("click", function () {
@@ -101,12 +109,28 @@ document.getElementById("login-btn").addEventListener("click", () => {
             .then(() => console.log("skip") /* skip */)
             .catch((e) => a.error.innerHTML(e));
     });
-    a.update.addEventListener("click", function () {
+
+    setInterval(() => {
         fetch(BASEURL + "me/player", {
             headers: defaultHeaders,
         })
-            .then((res) => res.json())
+            .catch((err) => {
+                console.log(err);
+            })
+            .then((res) => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    login();
+                } else {
+                    console.log(res);
+                    a.error.innerHTML = res.status + ": " + res.statusText;
+                }
+            })
+
             .then((data) => {
+                if (data["item"]["uri"] === a.song_uri) return;
+
                 a.album_art.src = data["item"]["album"]["images"][0]["url"];
                 a.song_name.innerHTML = data["item"]["name"];
                 let artistArr = [];
@@ -118,44 +142,18 @@ document.getElementById("login-btn").addEventListener("click", () => {
                 a.playlist = data["context"]["uri"];
                 a.song_uri = data["item"]["uri"];
 
+                a.background.style.background = "no-repeat url(" + data["item"]["album"]["images"][0]["url"] + ")";
+
                 if (data["is_playing"]) {
-                    a.play.style.display = "none";
-                    a.pause.style.display = "block";
+                    a.play_img.src = "./media/icon_pause.png";
+                    a.play_state = true;
+                } else {
+                    a.play_img.src = "./media/icon_play.png";
+                    a.play_state = false;
                 }
-                console.log(a);
+            })
+            .catch((err) => {
+                a.error.innerHTML = err;
             });
-    });
-    //
-    setTimeout(() => {
-        // a.update.click();
-        a.album_art.src = "https://i.scdn.co/image/ab67616d0000b2732c0245b8b83755349a2cfd8d";
-        a.song_artist.innerHTML = "Kid Trunks, Mikey More";
-        a.song_name.innerHTML = "IDKWGO (feat. Mikey More)";
-
-        a.background.style.background = "no-repeat url('https://i.scdn.co/image/ab67616d0000b2732c0245b8b83755349a2cfd8d')";
-    }, 50);
-
-    /* setInterval(() => {
-        fetch(BASEURL + "me/player", {
-            headers: [
-                ["Authorization", "Bearer " + params["access_token"]],
-                ["Content-Type", "application/json"],
-                ["Accept", "application/json"],
-            ],
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-                a.album_art.src = data["item"]["album"]["images"][0]["images"]["url"];
-                a.song_name.innerHTML = WebPlaybackState["track_window"]["current_track"]["name"];
-                let artistArr = [];
-                for (let i = 0; i < data["item"]["artists"].length; i++) {
-                    artistArr.push(data["item"]["artists"][i]["name"]);
-                }
-                a.song_artist.innerHTML = artistArr.join(", ");
-
-                a.playlist = WebPlaybackState["context"]["uri"];
-                a.song_uri = WebPlaybackState["track_window"]["current_track"]["uri"];
-            });
-    }, 1000); */
+    }, 2000);
 })();
