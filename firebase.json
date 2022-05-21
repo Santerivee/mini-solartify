@@ -2,17 +2,15 @@
     "database": {
         "rules": "database.rules.json"
     },
-    "hosting": [
-        {
-            "target": "solartify-mini",
-            "public": "/",
-            "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-            "rewrites": [
-                {
-                    "source": "**",
-                    "destination": "/index.html"
-                }
-            ]
-        }
-    ]
+    "hosting": {
+        "site": "solartify-mini",
+        "public": "/",
+        "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
 }
