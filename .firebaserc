@@ -6,7 +6,7 @@
     "solartify": {
       "hosting": {
         "mini": [
-          "mini-solartify"
+          "solartify-mini"
         ]
       }
     }
