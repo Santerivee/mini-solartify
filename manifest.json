@@ -1,0 +1,8 @@
+{
+    "name": "mini solartify",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#ff00ff",
+    "description": "lol",
+    "icons": []
+}
