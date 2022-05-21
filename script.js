@@ -159,7 +159,8 @@ function login() {
                 }
                 a.song_artist.innerHTML = artistArr.join(", ");
 
-                a.playlist = data["context"]["uri"];
+                a.playlist = data["context"]["uri"] || null;
+
                 a.song_uri = data["item"]["uri"];
 
                 a.background.style.background = "no-repeat url(" + data["item"]["album"]["images"][0]["url"] + ")";
