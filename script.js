@@ -184,7 +184,7 @@ function login() {
                 }
                 a.song_artist.innerHTML = artistArr.join(", ");
 
-                if (data["context"]["uri"]) {
+                if (data["context"]?.["uri"]) {
                     a.playlist = data["context"]["uri"];
                 } else {
                     fetch("https://us-central1-solartify.cloudfunctions.net/getPlaylist?userid=" + a.userid + "&token=" + a.access_token)
