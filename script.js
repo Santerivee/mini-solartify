@@ -188,8 +188,8 @@ function login() {
                     a.playlist = data["context"]["uri"];
                 } else {
                     fetch("https://us-central1-solartify.cloudfunctions.net/getPlaylist?userid=" + a.userid + "&token=" + a.access_token)
-                        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-                        .then((json) => (a.playlist = json))
+                        .then((res) => (res.ok ? res.text() : Promise.reject(res)))
+                        .then((text) => (a.playlist = text))
                         .catch((e) => (a.error.innerHTML = e));
                 }
 
