@@ -188,9 +188,22 @@ function login() {
                     a.playlist = data["context"]["uri"];
                 } else {
                     fetch("https://us-central1-solartify.cloudfunctions.net/getPlaylist?userid=" + a.userid + "&token=" + a.access_token)
-                        .then((res) => (res.ok ? res.text() : Promise.reject(res)))
-                        .then((text) => (a.playlist = text))
-                        .catch((e) => (a.error.innerHTML = e));
+                        .then((res) => {
+                            console.log(res);
+                            if (res.ok) {
+                                return res.text();
+                            } else {
+                                Promise.reject(res);
+                            }
+                        })
+                        .then((text) => {
+                            console.log(text);
+                            a.playlist = text;
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                            a.error.innerHTML = e;
+                        });
                 }
 
                 a.song_uri = data["item"]["uri"];
