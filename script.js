@@ -147,7 +147,11 @@ function login() {
             })
             .then((res) => {
                 if (res.ok) {
-                    return res.json();
+                    if (res.status === 204) {
+                        a.timeout = a.timeout > 30 ? 10 : a.timeout + 1;
+                    } else {
+                        return res.json();
+                    }
                 } else if (res.status === 401) {
                     login();
                 } else {
@@ -188,7 +192,6 @@ function login() {
                 } else {
                     fetch("https://us-central1-solartify.cloudfunctions.net/getPlaylist?userid=" + a.userid + "&token=" + a.access_token)
                         .then((res) => {
-                            console.log(res);
                             if (res.ok) {
                                 return res.text();
                             } else {
@@ -196,7 +199,6 @@ function login() {
                             }
                         })
                         .then((text) => {
-                            console.log(text);
                             a.playlist = text;
                         })
                         .catch((e) => {
