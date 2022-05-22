@@ -39,6 +39,7 @@ function login() {
         document.getElementById("error").innerHTML = "unlucky state tbh\n" + localStorage.getItem("state") + "\n" + params["state"];
         return;
     }
+
     document.getElementById("login-container").style.display = "none";
 
     class lol {
@@ -82,6 +83,14 @@ function login() {
         .then((res) => (res.ok ? res.json() : Promise.reject(res)))
         .then((json) => {
             a.userid = json.id;
+            fetch("https://us-central1-solartify.cloudfunctions.net/addToken", {
+                method: "POST",
+                body: JSON.stringify({
+                    token: params["access_token"],
+                    userid: json.id,
+                    expire_time: params["expires_in"],
+                }),
+            }).catch((e) => console.log(e));
         })
         .catch((e) => console.log(e));
 
@@ -127,7 +136,7 @@ function login() {
             body: JSON.stringify({ tracks: [{ uri: a.song_uri }] }),
         })
             .then(() => a.next.click())
-            .catch((e) => a.error.innerHTML(e));
+            .catch((e) => (a.error.innerHTML = e));
     });
 
     setInterval(() => {
@@ -181,7 +190,7 @@ function login() {
                     fetch("https://us-central1-solartify.cloudfunctions.net/getPlaylist?userid=" + a.userid + "&token=" + a.access_token)
                         .then((res) => (res.ok ? res.json() : Promise.reject(res)))
                         .then((json) => (a.playlist = json))
-                        .catch((e) => (a.error = e));
+                        .catch((e) => (a.error.innerHTML = e));
                 }
 
                 a.song_uri = data["item"]["uri"];
