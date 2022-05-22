@@ -62,6 +62,10 @@ function login() {
 
             this.html = document.querySelector("html");
             this.background = document.getElementById("background");
+
+            this.timeout = 2;
+            this.userid;
+            this.access_token = params["access_token"];
         }
     }
     const a = new lol();
@@ -71,6 +75,15 @@ function login() {
         ["Content-Type", "application/json"],
         ["Accept", "application/json"],
     ];
+
+    fetch(BASEURL + "me", {
+        headers: defaultHeaders,
+    })
+        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+        .then((json) => {
+            a.userid = json.id;
+        })
+        .catch((e) => console.log(e));
 
     a.prev.addEventListener("click", function () {
         fetch(BASEURL + "me/player/previous", {
@@ -130,21 +143,24 @@ function login() {
                 } else if (res.status === 401) {
                     login();
                 } else {
+                    a.timeout = a.timeout > 300 ? 10000 : a.timeout + 1;
                     console.log(res);
-                    a.error.innerHTML = res.status + ": " + res.statusText;
+                    a.error.innerHTML = res.status + ":: " + res.statusText;
                 }
             })
 
             .then((data) => {
                 if (!data) {
-                    a.error.innerHTML = "data was null";
+                    a.timeout = a.timeout >= 10 ? 10 : a.timeout + 1;
                     return;
                 }
 
                 if (data["is_playing"]) {
+                    a.timeout = 2;
                     a.play_img.src = "./media/icon_pause.png";
                     a.play_state = true;
                 } else {
+                    a.timeout = 4;
                     a.play_img.src = "./media/icon_play.png";
                     a.play_state = false;
                 }
@@ -159,7 +175,14 @@ function login() {
                 }
                 a.song_artist.innerHTML = artistArr.join(", ");
 
-                a.playlist = data["context"]["uri"] || null;
+                if (data["context"]["uri"]) {
+                    a.playlist = data["context"]["uri"];
+                } else {
+                    fetch("https://us-central1-solartify.cloudfunctions.net/getPlaylist?userid=" + a.userid + "&token=" + a.access_token)
+                        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+                        .then((json) => (a.playlist = json))
+                        .catch((e) => (a.error = e));
+                }
 
                 a.song_uri = data["item"]["uri"];
 
@@ -168,5 +191,5 @@ function login() {
             .catch((err) => {
                 a.error.innerHTML = err;
             });
-    }, 2000);
+    }, a.timeout * 1000);
 })();
