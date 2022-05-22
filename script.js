@@ -129,10 +129,9 @@ function login() {
     });
 
     a.remove.addEventListener("click", function () {
-        fetch(BASEURL + "playlists/" + a.playlist.split(":")[2] + "/tracks", {
+        fetch(BASEURL + "playlists/" + a.playlist + "/tracks", {
             method: "DELETE",
             headers: defaultHeaders,
-
             body: JSON.stringify({ tracks: [{ uri: a.song_uri }] }),
         })
             .then(() => a.next.click())
