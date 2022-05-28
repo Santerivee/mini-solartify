@@ -1,6 +1,6 @@
 {
     "rules": {
-        ".read": "now < 1655672400000",
-        ".write": "now < 1655672400000"
+        ".read": "false",
+        ".write": "false"
     }
 }
