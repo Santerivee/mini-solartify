@@ -131,7 +131,8 @@ function login() {
     });
 
     a.remove.addEventListener("click", function () {
-        fetch(BASEURL + "playlists/" + a.playlist + "/tracks", {
+        //a.playlist can be "spotify:playlist:abc" or just "abc" because im dumb
+        fetch(BASEURL + "playlists/" + (a.playlist.includes(":") ? a.playlist.split(":")[2] : a.playlist) + "/tracks", {
             method: "DELETE",
             headers: defaultHeaders,
             body: JSON.stringify({ tracks: [{ uri: a.song_uri }] }),
