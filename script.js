@@ -67,6 +67,8 @@ function login() {
             this.timeout = 2;
             this.userid;
             this.access_token = params["access_token"];
+
+            this.interval;
         }
     }
     const a = new lol();
@@ -138,7 +140,7 @@ function login() {
             .catch((e) => (a.error.innerHTML = e));
     });
 
-    setInterval(() => {
+    function handleInterval() {
         fetch(BASEURL + "me/player", {
             headers: defaultHeaders,
         })
@@ -148,7 +150,9 @@ function login() {
             .then((res) => {
                 if (res.ok) {
                     if (res.status === 204) {
-                        a.timeout = a.timeout > 30 ? 10 : a.timeout + 1;
+                        a.timeout = a.timeout > 30 ? 30 : a.timeout + 1;
+                        clearInterval(a.interval);
+                        a.interval = setInterval(handleInterval, a.timeout * 1000);
                     } else {
                         return res.json();
                     }
@@ -156,6 +160,9 @@ function login() {
                     login();
                 } else {
                     a.timeout = a.timeout > 300 ? 10000 : a.timeout + 1;
+                    clearInterval(a.interval);
+                    a.interval = setInterval(handleInterval, a.timeout * 1000);
+
                     console.log(res);
                     a.error.innerHTML = res.status + ":: " + res.statusText;
                 }
@@ -164,15 +171,23 @@ function login() {
             .then((data) => {
                 if (!data) {
                     a.timeout = a.timeout >= 10 ? 10 : a.timeout + 1;
+                    clearInterval(a.interval);
+                    a.interval = setInterval(handleInterval, a.timeout * 1000);
                     return;
                 }
 
                 if (data["is_playing"]) {
                     a.timeout = 2;
+                    clearInterval(a.interval);
+                    a.interval = setInterval(handleInterval, a.timeout * 1000);
+
                     a.play_img.src = "./media/icon_pause.png";
                     a.play_state = true;
                 } else {
                     a.timeout = 4;
+                    clearInterval(a.interval);
+                    a.interval = setInterval(handleInterval, a.timeout * 1000);
+
                     a.play_img.src = "./media/icon_play.png";
                     a.play_state = false;
                 }
@@ -214,5 +229,7 @@ function login() {
             .catch((err) => {
                 a.error.innerHTML = err;
             });
-    }, a.timeout * 1000);
+    }
+
+    a.interval = setInterval(handleInterval, a.timeout * 1000);
 })();
