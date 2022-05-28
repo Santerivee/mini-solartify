@@ -13,8 +13,8 @@ function login() {
     localStorage.setItem("state", state);
 
     const client_id = "ae780b9e7bf4476285fcfc7475fc2664";
-    // const redirect_uri = "http://127.0.0.1:5500/index.html";
-    const redirect_uri = "https://solartify-mini.web.app/";
+    const redirect_uri = "http://127.0.0.1:5500/index.html";
+    // const redirect_uri = "https://solartify-mini.web.app/";
 
     const url =
         "https://accounts.spotify.com/authorize" +
@@ -131,7 +131,8 @@ function login() {
     });
 
     a.remove.addEventListener("click", function () {
-        fetch(BASEURL + "playlists/" + a.playlist + "/tracks", {
+        //a.playlist can be "spotify:playlist:abc" or just "abc" because im dumb
+        fetch(BASEURL + "playlists/" + (a.playlist.includes(":") ? a.playlist.split(":")[2] : a.playlist) + "/tracks", {
             method: "DELETE",
             headers: defaultHeaders,
             body: JSON.stringify({ tracks: [{ uri: a.song_uri }] }),
