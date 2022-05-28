@@ -13,6 +13,14 @@ html {
     width: 100%;
 }
 
+button:not(#login-btn)
+/* button > img */ {
+    background-color: rgb(60, 60, 60);
+}
+.static-img:not(#remove-img) {
+    filter: invert(100%);
+}
+
 #background {
     position: fixed;
     top: 0;
