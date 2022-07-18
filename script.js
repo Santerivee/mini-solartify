@@ -18,7 +18,7 @@ function login() {
 
     const url =
         "https://accounts.spotify.com/authorize" +
-        "?response_type=token&scope=streaming playlist-read-collaborative playlist-read-private user-read-private playlist-modify-public playlist-modify-private" +
+        "?response_type=token&scope=streaming playlist-read-collaborative playlist-read-private user-read-private playlist-modify-public playlist-modify-private user-read-playback-state" +
         "&client_id=" +
         client_id +
         "&redirect_uri=" +
